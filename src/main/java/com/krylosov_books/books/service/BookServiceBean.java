@@ -39,9 +39,10 @@ public class BookServiceBean implements BookService {
             testBook = bookRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Book not found with id = " + id));}
         catch (EntityNotFoundException e) {
+            e.printStackTrace();
             return "The book with id " + id + " has not been found";
         }
-        if(testBook.getDeleted()!=null&&book.getDeleted()){
+        if(testBook.getDeleted()!=null&&testBook.getDeleted()){
             return "The book with id " + id + " has been deleted!";
         }
         return bookRepository.findById(id).map(entity -> {
@@ -61,6 +62,7 @@ public class BookServiceBean implements BookService {
             testBook = bookRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Book not found with id = " + id));}
         catch (EntityNotFoundException e) {
+            e.printStackTrace();
             return "The book with id " + id + " has not been found";
         }
         if(testBook.getDeleted()!=null&&testBook.getDeleted()){
