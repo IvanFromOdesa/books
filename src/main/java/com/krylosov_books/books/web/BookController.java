@@ -20,7 +20,7 @@ public class BookController {
 
     @PostMapping("/books")
     @ResponseStatus(HttpStatus.CREATED)
-    public Book createBook(@RequestBody Book book){
+    public Object createBook(@RequestBody Book book){
         return bookService.create(book);
     }
 
@@ -40,5 +40,23 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public String removeBookById(@PathVariable Integer id) {
         return bookService.removeBook(id);
+    }
+
+    @GetMapping(value = "/books", params = {"name"})
+    @ResponseStatus(HttpStatus.OK)
+    public Object findByTitle(String name){
+        return bookService.findBookByName(name);
+    }
+
+    @PatchMapping(value = "/books/restore", params = {"id"})
+    @ResponseStatus(HttpStatus.OK)
+    public String restoreBook(Integer id) {
+        return bookService.restore(id);
+    }
+
+    @GetMapping(value = "/books", params = {"author"})
+    @ResponseStatus(HttpStatus.OK)
+    public Object findAnyByAuthor(String author){
+        return bookService.findBookByAuthor(author);
     }
 }

@@ -1,13 +1,15 @@
 package com.krylosov_books.books.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @JsonIgnoreProperties("deleted")
-@Table(name="books")
+@Table(name="books", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 public class Book {
 
     @Id
@@ -18,7 +20,8 @@ public class Book {
 
     private String author;
 
-    private LocalDateTime publicationYear;
+    @JsonFormat (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate publicationYear;
 
     private int pagesNumber;
 
@@ -39,9 +42,9 @@ public class Book {
 
     public String getAuthor() {return author;}
 
-    public void setPublicationYear(LocalDateTime publicationYear) {this.publicationYear = publicationYear;}
+    public void setPublicationYear(LocalDate publicationYear) {this.publicationYear = publicationYear;}
 
-    public LocalDateTime getPublicationYear() {return publicationYear;}
+    public LocalDate getPublicationYear() {return publicationYear;}
 
     public void setPagesNumber(int pagesNumber) {this.pagesNumber = pagesNumber;}
 

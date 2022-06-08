@@ -2,6 +2,7 @@ package com.krylosov_books.books.service;
 
 import com.krylosov_books.books.domain.Book;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface BookService {
@@ -11,7 +12,7 @@ public interface BookService {
      * @param book - book to persist.
      * @return - make book.
      */
-    Book create (Book book);
+    Object create (Book book);
 
     /**
      * Retrieves all present books (which are not deleted) to client.
@@ -49,4 +50,10 @@ public interface BookService {
      */
 
     String removeBook (int id);
+
+    Object findBookByName (String name);
+
+    Object findBookByAuthor (String author);
+
+    String restore (int id);
 }
