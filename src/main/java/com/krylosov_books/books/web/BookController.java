@@ -30,13 +30,13 @@ public class BookController {
         return bookService.getBooks();
     }
 
-    @PutMapping("/books/{id}")
+    @PutMapping ("/books/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Object refreshBook(@PathVariable("id") Integer id, @RequestBody Book book) {
         return bookService.update(id, book);
     }
 
-    @DeleteMapping ("/books/{id}")
+    @PatchMapping ("/books/{id}")
     @ResponseStatus(HttpStatus.OK)
     public String removeBookById(@PathVariable Integer id) {
         return bookService.removeBook(id);
