@@ -2,14 +2,19 @@ package com.krylosov_books.books.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @JsonIgnoreProperties("deleted")
 @Table(name="books", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Book {
 
     @Id
@@ -28,6 +33,7 @@ public class Book {
     private String publisher;
 
     private Boolean isDeleted;
+
 
 
     public void setId(Integer id) {this.id = id;}
