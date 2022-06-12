@@ -26,7 +26,7 @@ public class BookController {
 
     @GetMapping("/books")
     @ResponseStatus(HttpStatus.OK)
-    public List<Book> getAllUsers() {
+    public List<Book> getAllBooks() {
         return bookService.getBooks();
     }
 

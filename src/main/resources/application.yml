@@ -1,5 +1,6 @@
 # Spring Boot configuration
 spring:
+
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -10,6 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update # When you launch the application for the first time - switch "none" at "create"
+      use-new-id-generator-mappings: false
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -18,3 +20,4 @@ spring:
 # Server configuration
 server:
   port: 8087 #set your port
+

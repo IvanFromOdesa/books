@@ -18,23 +18,28 @@ import java.time.LocalDate;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Integer id;
 
+    @Column(name="name")
     private String name;
 
+    @Column(name="author")
     private String author;
 
+    @Column(name="publication_year")
     @JsonFormat (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate publicationYear;
 
+    @Column(name="pages_number")
     private int pagesNumber;
 
+    @Column(name="publisher")
     private String publisher;
 
+    @Column(name="is_deleted")
     private Boolean isDeleted;
-
-
 
     public void setId(Integer id) {this.id = id;}
 

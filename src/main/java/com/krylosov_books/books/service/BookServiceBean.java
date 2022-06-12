@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 
 @Service
 @AllArgsConstructor
@@ -82,6 +84,7 @@ public class BookServiceBean implements BookService {
             }
         } catch (RuntimeException e){
             log.info("Exception: " + e);
+            //throw new EntityNotFoundException(); - if we want a test that expects an EntityNotFoundException
             return "The book with the given name " + name + " does not exist!";
         }
         return "The book with the given name " + name + " has been deleted!";

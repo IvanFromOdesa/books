@@ -5,6 +5,7 @@ import com.krylosov_books.books.domain.Book;
 import java.util.Collection;
 import java.util.List;
 
+
 public interface BookService {
     /**
      * Persists new book to database.
