@@ -2,15 +2,14 @@ package com.krylosov_books.books.service;
 
 import com.krylosov_books.books.domain.Book;
 import com.krylosov_books.books.repository.BookRepository;
+import com.krylosov_books.books.util.ResourceNotFoundException;
+import com.krylosov_books.books.util.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
-import java.util.concurrent.CompletionException;
 
 @Service
 @AllArgsConstructor
@@ -45,10 +44,7 @@ public class BookServiceBean implements BookService {
 
     @Override
     public Object update(int id, Book book) {
-        String checkResult = check(id);
-        if(checkResult!=null){
-            return checkResult;
-        }
+        check(id);
         return bookRepository.findById(id).map(entity -> {
             entity.setName(book.getName());
             entity.setAuthor(book.getAuthor());
@@ -61,10 +57,7 @@ public class BookServiceBean implements BookService {
 
     @Override
     public String removeBook(int id) {
-        String checkResult = check(id);
-        if(checkResult!=null){
-            return checkResult;
-        }
+        check(id);
         bookRepository.findById(id).map(entity->{
            entity.setDeleted(true);
            return bookRepository.save(entity);
@@ -73,45 +66,38 @@ public class BookServiceBean implements BookService {
     }
 
     @Override
-    public Object findBookByName(String name) {
+    public Book findBookByName(String name) {
         Book book;
         log.info("findBookByName() - start: name = {}", name);
         try{
             book = bookRepository.findByName(name);
             if(book.getDeleted()==null||!book.getDeleted()){
-                log.info("findBookByName() - end: collection = {}", book);
+                log.info("findBookByName() - end: book = {}", book);
                 return book;
-            }
-        } catch (RuntimeException e){
+            } else throw new ResourceWasDeletedException();
+        } catch (NullPointerException e){
             log.info("Exception: " + e);
-            //throw new EntityNotFoundException(); - if we want a test that expects an EntityNotFoundException
-            return "The book with the given name " + name + " does not exist!";
+            throw new ResourceNotFoundException("The book with name " + name + " has not been found!");
         }
-        return "The book with the given name " + name + " has been deleted!";
     }
 
     @Override
-    public Object findBookByAuthor(String author) {
+    public List<Book> findBookByAuthor(String author) {
         List <Book> list;
         ArrayList <Book> check = new ArrayList<>();
         log.info("findBookByAuthor() - start: author = {}", author);
-        try{
-            list = bookRepository.findByAuthor(author);
-            if(list.isEmpty()){
-                throw new NullPointerException();
+        list = bookRepository.findByAuthor(author);
+        if(list.isEmpty()){
+            throw new ResourceNotFoundException("The book with author " + author +" has not been found!");
+        }
+        for(Book index: list){
+            if(index.getDeleted()==null||!index.getDeleted()){
+                check.add(index);
             }
-            for(Book index: list){
-                if(index.getDeleted()==null||!index.getDeleted()){
-                    check.add(index);
-                }
-            }
-            log.info("findBookByAuthor() - end: list = {}", list);
-            if(check.isEmpty()){
-                return "The book(s) with the given author" + author + " has/have been deleted!";
-            }
-        } catch (RuntimeException e) {
-            log.info("Exception: " + e);
-            return "The book with the given author " + author + " does not exist!";
+        }
+        log.info("findBookByAuthor() - end: list = {}", list);
+        if(check.isEmpty()){
+            throw new ResourceWasDeletedException();
         }
         return check;
     }
@@ -140,20 +126,15 @@ public class BookServiceBean implements BookService {
             return "The book is restored!";
         }
         log.info("restore() - end: book does not exist in the db");
-        return "The book with id " + id + " has not been found!";
+        throw new ResourceNotFoundException("The book with id " + id + " has not been found!");
     }
 
     private String check (int id){
         Book testBook;
-        try{
             testBook = bookRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Book not found with id = " + id));}
-        catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return "The book with id " + id + " has not been found";
-        }
+                    .orElseThrow(() -> new ResourceNotFoundException("No books with id " + id + " have been found!"));
         if(testBook.getDeleted()!=null&&testBook.getDeleted()){
-            return "The book with id " + id + " has been deleted!";
+            throw new ResourceWasDeletedException();
         }
         return null;
     }

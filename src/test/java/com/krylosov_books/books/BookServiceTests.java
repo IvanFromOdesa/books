@@ -3,6 +3,7 @@ package com.krylosov_books.books;
 import com.krylosov_books.books.domain.Book;
 import com.krylosov_books.books.repository.BookRepository;
 import com.krylosov_books.books.service.BookServiceBean;
+import com.krylosov_books.books.util.ResourceNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -14,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -103,19 +105,12 @@ public class BookServiceTests {
         verify(bookRepository).findByAuthor("JJ Redbrick");
     }
 
-    /**
-     * Check return type must be an instance of String.
-     *
-     *
-     * bookServiceBean.findBookByName returns String: "The book with the given name " + name + " does not exist!".
-     */
-    @Test
-    public void should_return_string_when_book_doesnt_exist() {
+    @Test(expected = ResourceNotFoundException.class)
+    public void should_throw_exception_when_book_doesnt_exist() {
         Book book = new Book();
         book.setName("New adventures");
 
         given(bookRepository.findByName(anyString())).willReturn(null);
-        Object isString = bookServiceBean.findBookByName(book.getName());
-        assertThat(isString).isInstanceOf(String.class);
+        bookServiceBean.findBookByName(book.getName());
     }
 }
