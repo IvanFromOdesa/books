@@ -1,4 +1,4 @@
-package com.krylosov_books.books.util;
+package com.krylosov_books.books.util.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
