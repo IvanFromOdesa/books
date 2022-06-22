@@ -13,7 +13,7 @@ public interface BookService {
      * @param book - book to persist.
      * @return - make book.
      */
-    Object create (Book book);
+    Book create (Book book);
 
     /**
      * Retrieves all present books (which are not deleted) to client.
@@ -32,7 +32,7 @@ public interface BookService {
      * @return - the error message if there is a book in db (but it is deleted).
      */
 
-    Object update(int id, Book book);
+    Book update(int id, Book book);
 
     /**
      *
@@ -50,11 +50,13 @@ public interface BookService {
      * @return - the error message if there is no book in db with the matching id.
      */
 
-    String removeBook (int id);
+    void removeBook (int id);
 
-    Object findBookByName (String name);
+    Book findBookByName (String name);
 
-    Object findBookByAuthor (String author);
+    List <Book> findBookByAuthor (String author);
 
-    String restore (int id);
+    void restore (int id);
+
+    Book getById (int id);
 }

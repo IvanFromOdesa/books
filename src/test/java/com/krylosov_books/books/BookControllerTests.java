@@ -2,7 +2,8 @@ package com.krylosov_books.books;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krylosov_books.books.domain.Book;
-import com.krylosov_books.books.repository.BookRepository;
+import com.krylosov_books.books.dto.BookDto;
+import com.krylosov_books.books.util.config.BookConverter;
 import com.krylosov_books.books.web.BookController;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +24,8 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,21 +33,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = BooksApplication.class)
 @AutoConfigureMockMvc
 class BookControllerTests {
-
-     @Autowired
-     MockMvc mockMvc;
+    @Autowired
+    MockMvc mockMvc;
 
     @Autowired
     ObjectMapper mapper;
-
     @MockBean
     BookController bookController;
 
+    @Autowired
+    private BookConverter converter;
+
     @Test
     public void createBook_success() throws Exception {
-        Book book = Book.builder().name("Great book").build();
+        Book book = Book.builder().name("Great book").author("Ivan")
+                .pagesNumber(340).publisher("New Publisher").build();
+        BookDto dto = converter.toDto(book);
 
-        given(bookController.createBook(book)).willReturn(book);
+        given(bookController.createBook(dto)).willReturn(dto);
 
         mockMvc.perform(post("/api/books/")
                         .contentType(MediaType.APPLICATION_JSON).content(asJsonString(book)))
@@ -63,8 +65,6 @@ class BookControllerTests {
 
         List<Book> bookList = new ArrayList<>(Arrays.asList(book1, book2));
 
-        //bookRepository.save(book);
-
         Mockito.when(bookController.getAllBooks()).thenReturn(bookList);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/books/")
@@ -76,9 +76,12 @@ class BookControllerTests {
 
     @Test
     public void findByTitle_success() throws Exception {
-        Book book = Book.builder().name("New book").author("Ivan").build();
+        Book book = Book.builder().name("New book").author("Ivan")
+                .pagesNumber(340).publisher("New Publisher").build();
 
-        Mockito.when(bookController.findByTitle(book.getName())).thenReturn(book);
+        BookDto dto = converter.toDto(book);
+
+        Mockito.when(bookController.findByTitle(book.getName())).thenReturn(dto);
 
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("name", "New book");

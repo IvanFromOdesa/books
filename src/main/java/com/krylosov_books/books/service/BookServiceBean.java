@@ -2,8 +2,8 @@ package com.krylosov_books.books.service;
 
 import com.krylosov_books.books.domain.Book;
 import com.krylosov_books.books.repository.BookRepository;
-import com.krylosov_books.books.util.ResourceNotFoundException;
-import com.krylosov_books.books.util.ResourceWasDeletedException;
+import com.krylosov_books.books.util.exception.ResourceNotFoundException;
+import com.krylosov_books.books.util.exception.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,15 +19,8 @@ public class BookServiceBean implements BookService {
     private final BookRepository bookRepository;
 
     @Override
-    public Object create(Book book) {
-        Book check;
-        try{
-            check = bookRepository.save(book);
-        } catch (RuntimeException e){
-            log.info("Exception: " + e);
-            return "There is already a book with this name!";
-        }
-        return check;
+    public Book create(Book book) {
+        return bookRepository.save(book);
     }
 
     @Override
@@ -43,7 +36,7 @@ public class BookServiceBean implements BookService {
     }
 
     @Override
-    public Object update(int id, Book book) {
+    public Book update(int id, Book book) {
         check(id);
         return bookRepository.findById(id).map(entity -> {
             entity.setName(book.getName());
@@ -51,18 +44,17 @@ public class BookServiceBean implements BookService {
             entity.setPublicationYear(book.getPublicationYear());
             entity.setPagesNumber(book.getPagesNumber());
             entity.setPublisher(book.getPublisher());
-            return bookRepository.save(entity);});
+            return bookRepository.save(entity);}).orElseThrow();
     }
 
 
     @Override
-    public String removeBook(int id) {
+    public void removeBook(int id) {
         check(id);
         bookRepository.findById(id).map(entity->{
            entity.setDeleted(true);
            return bookRepository.save(entity);
         });
-        return "The book has just been deleted!";
     }
 
     @Override
@@ -82,7 +74,7 @@ public class BookServiceBean implements BookService {
     }
 
     @Override
-    public List<Book> findBookByAuthor(String author) {
+    public List <Book> findBookByAuthor(String author) {
         List <Book> list;
         ArrayList <Book> check = new ArrayList<>();
         log.info("findBookByAuthor() - start: author = {}", author);
@@ -102,40 +94,34 @@ public class BookServiceBean implements BookService {
         return check;
     }
 
-    /* Another variant of method restore
     @Override
-    public Object restore(int id) {
-        String checkResult = check(id);
-        if(checkResult==null){
-            return "The book with id " + id + " has not been previously deleted!";
-        }
-        if(checkResult.endsWith("found")){
-            return checkResult;
-        }
-        return bookRepository.findById(id).map(entity->{
-            entity.setDeleted(false);
-            return bookRepository.save(entity);
-        });
-    }*/
-
-    public String restore (int id){
+    public void restore (int id){
         log.info("restore() - start: id = {}", id);
         int num = bookRepository.restoreById(id);
         if (num==1){
             log.info("restore() - end: book restored");
-            return "The book is restored!";
+        } else {
+            log.info("restore() - end: book does not exist in the db");
+            throw new ResourceNotFoundException("The book with id " + id + " has not been found!");
         }
-        log.info("restore() - end: book does not exist in the db");
-        throw new ResourceNotFoundException("The book with id " + id + " has not been found!");
+    }
+
+    @Override
+    public Book getById(int id) {
+        check(id);
+        return returnBook(id);
     }
 
     private String check (int id){
         Book testBook;
-            testBook = bookRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("No books with id " + id + " have been found!"));
+            testBook = returnBook(id);
         if(testBook.getDeleted()!=null&&testBook.getDeleted()){
             throw new ResourceWasDeletedException();
         }
         return null;
+    }
+
+    private Book returnBook (int id){
+        return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No books with id " + id + " have been found!"));
     }
 }

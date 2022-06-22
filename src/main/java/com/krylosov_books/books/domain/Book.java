@@ -68,4 +68,17 @@ public class Book {
     public void setDeleted(Boolean deleted) {isDeleted = deleted;}
 
     public Boolean getDeleted() {return isDeleted;}
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", author='" + author + '\'' +
+                ", publicationYear=" + publicationYear +
+                ", pagesNumber=" + pagesNumber +
+                ", publisher='" + publisher + '\'' +
+                ", isDeleted=" + isDeleted +
+                '}';
+    }
 }

@@ -3,7 +3,7 @@ package com.krylosov_books.books;
 import com.krylosov_books.books.domain.Book;
 import com.krylosov_books.books.repository.BookRepository;
 import com.krylosov_books.books.service.BookServiceBean;
-import com.krylosov_books.books.util.ResourceNotFoundException;
+import com.krylosov_books.books.util.exception.ResourceNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -15,7 +15,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
