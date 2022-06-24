@@ -2,6 +2,7 @@ package com.krylosov_books.books.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -20,25 +21,32 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
+    @Schema(description = "Id of the book", pattern = "identity")
     private Integer id;
 
     @Column(name="name")
+    @Schema(description = "Name of the book.", example = "Can't hurt me", required = true)
     private String name;
 
     @Column(name="author")
+    @Schema(description = "Author of the book.", example = "David Goggins", required = true)
     private String author;
 
     @Column(name="publication_year")
     @JsonFormat (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Schema(description = "Year of publication.", example = "2018-09-05")
     private LocalDate publicationYear;
 
     @Column(name="pages_number")
+    @Schema(description = "Number of pages in the book.", example = "350")
     private int pagesNumber;
 
     @Column(name="publisher")
+    @Schema(description = "Publisher of the book.", example = "Lioncrest")
     private String publisher;
 
     @Column(name="is_deleted")
+    @Schema(hidden = true)
     private Boolean isDeleted;
 
     public void setId(Integer id) {this.id = id;}

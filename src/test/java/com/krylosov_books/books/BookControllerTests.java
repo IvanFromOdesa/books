@@ -52,7 +52,7 @@ class BookControllerTests {
 
         given(bookController.createBook(dto)).willReturn(dto);
 
-        mockMvc.perform(post("/api/books/")
+        mockMvc.perform(post("/api/books/create")
                         .contentType(MediaType.APPLICATION_JSON).content(asJsonString(book)))
                 .andExpect(status().isCreated());
     }
@@ -67,7 +67,7 @@ class BookControllerTests {
 
         Mockito.when(bookController.getAllBooks()).thenReturn(bookList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/books/")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/books/all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -86,7 +86,7 @@ class BookControllerTests {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("name", "New book");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/books/").params(requestParams)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/books/byTitle").params(requestParams)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

@@ -2,6 +2,7 @@ package com.krylosov_books.books.service;
 
 import com.krylosov_books.books.domain.Book;
 import com.krylosov_books.books.repository.BookRepository;
+import com.krylosov_books.books.util.exception.ResourceAlreadyExistsException;
 import com.krylosov_books.books.util.exception.ResourceNotFoundException;
 import com.krylosov_books.books.util.exception.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,12 @@ public class BookServiceBean implements BookService {
 
     @Override
     public Book create(Book book) {
+        List <Book> books = bookRepository.findAll();
+        for(Book index: books){
+            if(index.getName().equals(book.getName())){
+                throw new ResourceAlreadyExistsException("The book with the given name already exists!");
+            }
+        }
         return bookRepository.save(book);
     }
 
@@ -50,7 +57,7 @@ public class BookServiceBean implements BookService {
 
     @Override
     public void removeBook(int id) {
-        check(id);
+        //check(id);
         bookRepository.findById(id).map(entity->{
            entity.setDeleted(true);
            return bookRepository.save(entity);
@@ -108,17 +115,16 @@ public class BookServiceBean implements BookService {
 
     @Override
     public Book getById(int id) {
-        check(id);
+        //check(id);
         return returnBook(id);
     }
 
-    private String check (int id){
+    private void check (int id){
         Book testBook;
             testBook = returnBook(id);
         if(testBook.getDeleted()!=null&&testBook.getDeleted()){
             throw new ResourceWasDeletedException();
         }
-        return null;
     }
 
     private Book returnBook (int id){
