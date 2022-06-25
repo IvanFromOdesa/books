@@ -1,6 +1,10 @@
 # Spring Boot configuration
 spring:
-
+  #Security
+  security:
+    user:
+      name: admin
+      password: admin
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver

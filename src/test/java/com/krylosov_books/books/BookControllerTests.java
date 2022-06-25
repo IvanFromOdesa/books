@@ -5,6 +5,9 @@ import com.krylosov_books.books.domain.Book;
 import com.krylosov_books.books.dto.BookDto;
 import com.krylosov_books.books.util.config.BookConverter;
 import com.krylosov_books.books.web.BookController;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -13,10 +16,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,12 +32,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = BooksApplication.class)
+@SpringBootTest(classes = BooksApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class BookControllerTests {
     @Autowired
@@ -40,11 +49,15 @@ class BookControllerTests {
     ObjectMapper mapper;
     @MockBean
     BookController bookController;
-
     @Autowired
     private BookConverter converter;
 
+    @Autowired
+    WebApplicationContext webApplicationContext;
+
     @Test
+    @WithMockUser
+    @Disabled
     public void createBook_success() throws Exception {
         Book book = Book.builder().name("Great book").author("Ivan")
                 .pagesNumber(340).publisher("New Publisher").build();
@@ -58,6 +71,7 @@ class BookControllerTests {
     }
 
     @Test
+    @WithMockUser
     public void getAllBooks_success() throws Exception {
 
         Book book1 = Book.builder().name("New book").author("Ivan").build();
@@ -75,7 +89,9 @@ class BookControllerTests {
     }
 
     @Test
+    @WithMockUser
     public void findByTitle_success() throws Exception {
+
         Book book = Book.builder().name("New book").author("Ivan")
                 .pagesNumber(340).publisher("New Publisher").build();
 
@@ -89,6 +105,14 @@ class BookControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/books/byTitle").params(requestParams)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Before
+    public void setup() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(springSecurity())
+                .build();
     }
     private String asJsonString(final Object obj){
         try{
