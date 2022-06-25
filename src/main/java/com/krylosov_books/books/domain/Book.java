@@ -49,6 +49,10 @@ public class Book {
     @Schema(hidden = true)
     private Boolean isDeleted;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "position_id", referencedColumnName = "id_position")
+    private Position position;
+
     public void setId(Integer id) {this.id = id;}
 
     public Integer getId() {return id;}
@@ -76,6 +80,10 @@ public class Book {
     public void setDeleted(Boolean deleted) {isDeleted = deleted;}
 
     public Boolean getDeleted() {return isDeleted;}
+
+    public Position getPosition() {return position;}
+
+    public void setPosition(Position position) {this.position = position;}
 
     @Override
     public String toString() {

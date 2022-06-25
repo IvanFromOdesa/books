@@ -1,9 +1,11 @@
 package com.krylosov_books.books.util.config;
 
 import com.krylosov_books.books.domain.Book;
+import com.krylosov_books.books.domain.Position;
 import com.krylosov_books.books.dto.BookDeleteDto;
 import com.krylosov_books.books.dto.BookDto;
 import com.krylosov_books.books.dto.BookRestoreDto;
+import com.krylosov_books.books.dto.PositionDto;
 import ma.glasnost.orika.MapperFactory;
 import net.rakugakibox.spring.boot.orika.OrikaMapperFactoryConfigurer;
 
@@ -26,6 +28,10 @@ public class MappingConfig implements OrikaMapperFactoryConfigurer{
                 .register();
 
         orikaMapperFactory.classMap(Book.class, BookRestoreDto.class)
+                .byDefault()
+                .register();
+
+        orikaMapperFactory.classMap(Position.class, PositionDto.class)
                 .byDefault()
                 .register();
     }

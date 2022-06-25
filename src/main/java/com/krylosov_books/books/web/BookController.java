@@ -4,8 +4,10 @@ import com.krylosov_books.books.domain.Book;
 import com.krylosov_books.books.dto.BookDeleteDto;
 import com.krylosov_books.books.dto.BookDto;
 import com.krylosov_books.books.dto.BookRestoreDto;
+import com.krylosov_books.books.dto.PositionDto;
 import com.krylosov_books.books.service.BookService;
 import com.krylosov_books.books.util.config.BookConverter;
+import com.krylosov_books.books.util.config.PositionConverter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ public class BookController implements BookSwagger{
     private final BookService bookService;
 
     private final BookConverter converter;
+
+    private final PositionConverter positionConverter;
 
     @PostMapping("/books/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -75,5 +79,20 @@ public class BookController implements BookSwagger{
     @Override
     public List<Book> findAnyByAuthor(String author){
         return bookService.findBookByAuthor(author);
+    }
+
+    @PostMapping(value = "/books/{id}/addPosition")
+    @ResponseStatus(HttpStatus.OK)
+    public BookDto addBookPosition(@PathVariable Integer id, @RequestBody PositionDto positionDto) {
+        var position = positionConverter.fromDto(positionDto);
+        var book = bookService.addPosition(id, position);
+        return converter.toDto(book);
+    }
+
+    @GetMapping(value = "/books/position", params = {"name"})
+    @ResponseStatus(HttpStatus.OK)
+    public PositionDto getPositionByTitleOfBook(String name) {
+        var position = bookService.getPositionByBookTitle(name);
+        return positionConverter.toDto(position);
     }
 }

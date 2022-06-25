@@ -1,7 +1,9 @@
 package com.krylosov_books.books.service;
 
 import com.krylosov_books.books.domain.Book;
+import com.krylosov_books.books.domain.Position;
 import com.krylosov_books.books.repository.BookRepository;
+import com.krylosov_books.books.repository.PositionRepository;
 import com.krylosov_books.books.util.exception.ResourceAlreadyExistsException;
 import com.krylosov_books.books.util.exception.ResourceNotFoundException;
 import com.krylosov_books.books.util.exception.ResourceWasDeletedException;
@@ -18,6 +20,8 @@ import java.util.List;
 public class BookServiceBean implements BookService {
 
     private final BookRepository bookRepository;
+
+    private final PositionRepository positionRepository;
 
     @Override
     public Book create(Book book) {
@@ -117,6 +121,25 @@ public class BookServiceBean implements BookService {
     public Book getById(int id) {
         //check(id);
         return returnBook(id);
+    }
+
+    @Override
+    public Book addPosition(Integer id, Position position) {
+        log.info("addPosition() - start: id = {}", id, "position = {}", position);
+        check(id);
+        log.info("addPosition() - end");
+        return bookRepository.findById(id).map(entity->{
+            entity.setPosition(position);
+            return bookRepository.save(entity);
+        }).orElseThrow();
+    }
+
+    @Override
+    public Position getPositionByBookTitle(String name) {
+        log.info("getPositionByBookTitle() - start: name = {}", name);
+        var position = positionRepository.getPositionByBookName(name);
+        log.info("getPositionByBookTitle() - end: position = {}", position);
+        return position;
     }
 
     private void check (int id){
