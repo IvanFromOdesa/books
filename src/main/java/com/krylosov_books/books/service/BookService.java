@@ -1,6 +1,7 @@
 package com.krylosov_books.books.service;
 
 import com.krylosov_books.books.domain.Book;
+import com.krylosov_books.books.domain.Position;
 
 import java.util.Collection;
 import java.util.List;
@@ -59,4 +60,8 @@ public interface BookService {
     void restore (int id);
 
     Book getById (int id);
+
+    Book addPosition (Integer id, Position position);
+
+    Position getPositionByBookTitle (String name);
 }
