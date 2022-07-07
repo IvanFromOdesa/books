@@ -24,9 +24,7 @@ import java.util.List;
 public class BookController implements BookSwagger{
     
     private final BookService bookService;
-
     private final BookConverter converter;
-
     private final PositionConverter positionConverter;
 
     @PostMapping("/books/create")
@@ -81,8 +79,9 @@ public class BookController implements BookSwagger{
         return bookService.findBookByAuthor(author);
     }
 
-    @PostMapping(value = "/books/{id}/addPosition")
+    @PutMapping(value = "/books/{id}/addPosition")
     @ResponseStatus(HttpStatus.OK)
+    @Override
     public BookDto addBookPosition(@PathVariable Integer id, @RequestBody PositionDto positionDto) {
         var position = positionConverter.fromDto(positionDto);
         var book = bookService.addPosition(id, position);
@@ -91,6 +90,7 @@ public class BookController implements BookSwagger{
 
     @GetMapping(value = "/books/position", params = {"name"})
     @ResponseStatus(HttpStatus.OK)
+    @Override
     public PositionDto getPositionByTitleOfBook(String name) {
         var position = bookService.getPositionByBookTitle(name);
         return positionConverter.toDto(position);
