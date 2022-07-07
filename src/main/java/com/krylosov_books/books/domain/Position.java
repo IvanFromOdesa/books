@@ -1,5 +1,6 @@
 package com.krylosov_books.books.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class Position {
     @Column(name = "location")
     private String location;
 
+    @JsonManagedReference
     @OneToOne(mappedBy = "position")
     private Book book;
 }

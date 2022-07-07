@@ -1,5 +1,6 @@
 package com.krylosov_books.books.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,6 +52,7 @@ public class Book {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "position_id", referencedColumnName = "id_position")
+    @JsonBackReference
     private Position position;
 
     public void setId(Integer id) {this.id = id;}

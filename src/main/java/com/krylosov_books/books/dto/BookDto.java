@@ -35,5 +35,4 @@ public class BookDto {
     @Size(min = 4, max = 30, message = "Publisher of the book must be between 4 and 30 characters long!")
     @Schema(description = "Publisher of the book.", example = "Lioncrest")
     public String publisher;
-
 }
