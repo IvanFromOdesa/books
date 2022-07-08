@@ -6,8 +6,6 @@ import com.krylosov_books.books.dto.BookDto;
 import com.krylosov_books.books.util.config.BookConverter;
 import com.krylosov_books.books.web.BookController;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
@@ -38,8 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = BooksApplication.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = BooksApplication.class)
 @AutoConfigureMockMvc
 class BookControllerTests {
     @Autowired
@@ -57,7 +53,6 @@ class BookControllerTests {
 
     @Test
     @WithMockUser
-    @Disabled
     public void createBook_success() throws Exception {
         Book book = Book.builder().name("Great book").author("Ivan")
                 .pagesNumber(340).publisher("New Publisher").build();
