@@ -117,7 +117,7 @@ public class BookServiceBean implements BookService {
     @Override
     public Position getPositionByBookTitle(String name) {
         log.info("getPositionByBookTitle() - start: name = {}", name);
-        Book book = perform(name);
+        var book = perform(name);
         log.debug("Book ={}", book);
         var position = positionRepository.getPositionByBookName(name);
         log.info("getPositionByBookTitle() - end: position = {}", position);
@@ -140,7 +140,7 @@ public class BookServiceBean implements BookService {
              return Optional.ofNullable(bookRepository.findByName(name))
                      .filter(book -> book.getDeleted() == null|| !book.getDeleted())
                      .orElseThrow(ResourceWasDeletedException::new);
-         } catch (NullPointerException e){
+         } catch (NullPointerException e) {
              log.info("Exception: " + e);
              throw new ResourceNotFoundException("The book with name " + name + " has not been found!");
          }

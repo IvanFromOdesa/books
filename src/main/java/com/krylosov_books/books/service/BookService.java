@@ -102,7 +102,7 @@ public interface BookService {
      * @param name - book name.
      * @return - position of the specified book
      * @throws ResourceWasDeletedException if the specified book was previously deleted
-     * @throws ResourceNotFoundException - if the book with the specified id does not exist
+     * @throws ResourceNotFoundException - if the book with the specified name does not exist
      */
 
     Position getPositionByBookTitle (String name);
