@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,7 +60,7 @@ public class BookServiceBean implements BookService {
 
     @Override
     public void removeBook(int id) {
-        //check(id);
+        check(id);
         bookRepository.findById(id).map(entity->{
            entity.setDeleted(true);
            return bookRepository.save(entity);
@@ -68,28 +69,17 @@ public class BookServiceBean implements BookService {
 
     @Override
     public Book findBookByName(String name) {
-        Book book;
-        log.info("findBookByName() - start: name = {}", name);
-        try{
-            book = bookRepository.findByName(name);
-            if(book.getDeleted()==null||!book.getDeleted()){
-                log.info("findBookByName() - end: book = {}", book);
-                return book;
-            } else throw new ResourceWasDeletedException();
-        } catch (NullPointerException e){
-            log.info("Exception: " + e);
-            throw new ResourceNotFoundException("The book with name " + name + " has not been found!");
-        }
+        return perform(name);
     }
 
     @Override
     public List <Book> findBookByAuthor(String author) {
         log.info("findBookByAuthor() - start: author = {}", author);
-        List <Book> list = bookRepository.findByAuthor(author)
+        List<Book> list = bookRepository.findByAuthor(author)
                 .stream()
                 .filter(book -> book.getDeleted() == null || !book.getDeleted())
                 .collect(Collectors.toList());
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new ResourceNotFoundException("The book with author " + author +" has not been found!");
         }
         log.info("findBookByAuthor() - end: list = {}", list);
@@ -100,7 +90,7 @@ public class BookServiceBean implements BookService {
     public void restore (int id){
         log.info("restore() - start: id = {}", id);
         int num = bookRepository.restoreById(id);
-        if (num == 1){
+        if (num == 1) {
             log.info("restore() - end: book restored");
         } else {
             log.info("restore() - end: book does not exist in the db");
@@ -127,6 +117,8 @@ public class BookServiceBean implements BookService {
     @Override
     public Position getPositionByBookTitle(String name) {
         log.info("getPositionByBookTitle() - start: name = {}", name);
+        Book book = perform(name);
+        log.debug("Book ={}", book);
         var position = positionRepository.getPositionByBookName(name);
         log.info("getPositionByBookTitle() - end: position = {}", position);
         return position;
@@ -140,6 +132,18 @@ public class BookServiceBean implements BookService {
 
      private Book returnBook(int id) {
         return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No books with id " + id + " have been found!"));
+     }
+
+     private Book perform(String name) {
+         log.info("findBookByName() - start: name = {}", name);
+         try {
+             return Optional.ofNullable(bookRepository.findByName(name))
+                     .filter(book -> book.getDeleted() == null|| !book.getDeleted())
+                     .orElseThrow(ResourceWasDeletedException::new);
+         } catch (NullPointerException e){
+             log.info("Exception: " + e);
+             throw new ResourceNotFoundException("The book with name " + name + " has not been found!");
+         }
      }
 }
 

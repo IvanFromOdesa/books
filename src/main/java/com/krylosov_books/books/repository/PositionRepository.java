@@ -11,6 +11,5 @@ public interface PositionRepository extends JpaRepository<Position, Integer> {
             "WHERE id_position IN\n" +
             "\t(SELECT position_id FROM books\n" +
             "\tWHERE name = :name)", nativeQuery = true)
-    @Transactional
     Position getPositionByBookName(String name);
 }

@@ -12,10 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
+
     Book findByName (String name);
 
     @Modifying
-    @Transactional
     @Query ("UPDATE Book b SET b.isDeleted = false WHERE b.id=?1")
     int restoreById (int id);
 
