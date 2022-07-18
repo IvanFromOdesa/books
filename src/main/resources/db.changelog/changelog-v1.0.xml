@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is one version of managing db. Here are stored any changes to sql scripts -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Changes of db content are here. We specify the name of editor and id (must be unique) of the changeset.
+     This ensures successful rollbacks and keeps track of the executed changesets-->
+    <!--Example 1-->
+
+    <!--<changeSet id="" author="Ivan">
+        <addColumn
+                schemaName="public"
+                tableName="books">
+            <column name="prizes" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>-->
+
+    <!--Example 2-->
+    <!--<changeSet id="2" author="Ivan">
+        <delete tableName="position" schemaName="public">
+            <where>location='random'</where>
+        </delete>
+    </changeSet>-->
+</databaseChangeLog>
