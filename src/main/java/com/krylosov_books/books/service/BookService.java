@@ -11,6 +11,7 @@ import java.util.List;
 
 
 public interface BookService {
+
     /**
      * Persists new book to database.
      *
@@ -18,6 +19,7 @@ public interface BookService {
      * @return - make book.
      * @throws ResourceAlreadyExistsException if the book with the given name already exists
      */
+
     Book create (Book book);
 
     /**

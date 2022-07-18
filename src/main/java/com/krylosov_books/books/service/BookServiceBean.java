@@ -138,7 +138,7 @@ public class BookServiceBean implements BookService {
          log.info("findBookByName() - start: name = {}", name);
          try {
              return Optional.ofNullable(bookRepository.findByName(name))
-                     .filter(book -> book.getDeleted() == null|| !book.getDeleted())
+                     .filter(book -> book.getDeleted() == null || !book.getDeleted())
                      .orElseThrow(ResourceWasDeletedException::new);
          } catch (NullPointerException e) {
              log.info("Exception: " + e);
