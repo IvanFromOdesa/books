@@ -13,8 +13,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +40,7 @@ public class BookServiceTests {
         Book book = Book.builder().name("Super Book").author("JJ Redbrick").build();
 
         when(bookRepository.save(ArgumentMatchers.any(Book.class))).thenReturn(book);
-        Book createdBook = (Book) bookServiceBean.create(book);
+        Book createdBook = bookServiceBean.create(book);
 
         assertThat(createdBook.getName()).isSameAs(book.getName());
         verify(bookRepository).save(book);
@@ -51,7 +53,7 @@ public class BookServiceTests {
 
         when(bookRepository.findByName(book.getName())).thenReturn(book);
 
-        Book expectedBook = (Book) bookServiceBean.findBookByName("Super Book");
+        Book expectedBook = bookServiceBean.findBookByName("Super Book");
 
         assertThat(expectedBook).isSameAs(book);
         verify(bookRepository).findByName(book.getName());
@@ -63,18 +65,14 @@ public class BookServiceTests {
         Book book2 = Book.builder().name("New Book").author("JJ Redbrick").build();
         Book book3 = Book.builder().name("Just a Book").author("Eric Hansen").build();
 
-        int howManyBooksWithTheGivenAuthor = 0;
+        List<Book> list = new ArrayList<>(Arrays.asList(book1, book2, book3));
+        AtomicInteger howManyBooksWithTheGivenAuthor = new AtomicInteger(0);
 
-        List <Book> list = new ArrayList<>();
-        list.add(book1);
-        list.add(book2);
-        list.add(book3);
-
-        for(Book index: list){
-            if(index.getAuthor().equals("JJ Redbrick")){
-                howManyBooksWithTheGivenAuthor++;
+        list.forEach(book -> {
+            if(book.getAuthor().equals("JJ Redbrick")) {
+                howManyBooksWithTheGivenAuthor.getAndIncrement();
             }
-        }
+        });
 
         Mockito.doAnswer(invocation -> {
             list.removeIf(checkBook -> !Objects.equals(checkBook.getAuthor(), "JJ Redbrick"));
@@ -90,14 +88,17 @@ public class BookServiceTests {
             exception = e;
         }
 
-        assertNull(exception); // if there were no books with the given author (findBookByAuthor() returned String)
-        assertThat(expectedList.size()).isEqualTo(howManyBooksWithTheGivenAuthor); // check if all the books with the given name are in expectedList
+        assertNull(exception); // if there were no books with the given author
+        assertThat(expectedList.size()).isEqualTo(howManyBooksWithTheGivenAuthor.intValue()); // check if all the books with the given name are in expectedList
 
         boolean isAllBooksWithTheGivenAuthor = false;
-        for(Book index: expectedList){
+
+        for(Book index: expectedList) {
             if (index.getAuthor().equals("JJ Redbrick")) {
                 isAllBooksWithTheGivenAuthor = true;
+                continue;
             }
+            isAllBooksWithTheGivenAuthor = false;
         }
 
         assertThat(isAllBooksWithTheGivenAuthor).isEqualTo(true); // check if all the books' author is "JJ Redbrick"
