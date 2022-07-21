@@ -5,6 +5,7 @@ Spring boot project "books"
 - Spring Boot
 - Spring Data JPA (Hibernate)
 - Spring Web
+- Maven
 - RDBMS: PostgreSQL
 - DTO: Orika*
 - Swagger API
