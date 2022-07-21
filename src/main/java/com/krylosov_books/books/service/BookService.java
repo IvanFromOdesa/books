@@ -100,7 +100,7 @@ public interface BookService {
     Book addPosition (Integer id, Position position);
 
     /**
-     * Removes a book by id in database.
+     * Removes a book by name in database.
      * @param name - book name.
      * @return - position of the specified book
      * @throws ResourceWasDeletedException if the specified book was previously deleted
