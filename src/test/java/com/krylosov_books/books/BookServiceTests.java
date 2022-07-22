@@ -84,7 +84,7 @@ public class BookServiceTests {
 
         try{
             expectedList = (ArrayList<Book>) bookServiceBean.findBookByAuthor("JJ Redbrick");
-        } catch (ClassCastException e) {
+        } catch (ResourceNotFoundException e) {
             exception = e;
         }
 
